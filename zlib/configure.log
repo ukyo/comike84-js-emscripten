@@ -1,0 +1,768 @@
+--------------------
+./configure
+2013年  8月  1日 木曜日 02:57:33 JST
+=== ztest15530.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -c ztest15530.c
+... using /home/ukyo/emscripten/emcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest15530.c ===
+int foo() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+
+Checking for shared library support...
+=== ztest15530.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -w -c ztest15530.c
+/home/ukyo/emscripten/emcc -o ztest15530.so ztest15530.o
+clang: warning: argument unused during compilation: '-nostdinc'
+clang: warning: argument unused during compilation: '-nostdinc++'
+clang: warning: argument unused during compilation: '-Xclang -nobuiltininc'
+clang: warning: argument unused during compilation: '-Xclang -nostdsysteminc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/local/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libcxx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/emscripten'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/bsd'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/gfx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/net'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/SDL'
+/usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crt1.o: In function `_start':
+(.text+0x18): undefined reference to `main'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+No shared library support; try without defining CC and CFLAGS
+Building static library libz.a version 1.2.8 with /home/ukyo/emscripten/emcc.
+
+=== ztest15530.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+/home/ukyo/emscripten/emcc -c -D_LARGEFILE64_SOURCE=1 ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+ztest15530.c:2:1: error: unknown type name 'off64_t'; did you mean '_off64_t'?
+off64_t dummy = 0;
+^~~~~~~
+_off64_t
+/home/ukyo/emscripten/system/include/libc/sys/_types.h:42:32: note: '_off64_t' declared here
+__extension__ typedef unsigned _off64_t; /* XXX Emscripten */
+                               ^
+1 error generated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest15530.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -o ztest15530 ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for fseeko... Yes.
+
+=== ztest15530.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+/home/ukyo/emscripten/emcc -o ztest15530 ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+/tmp/ztest15530-G0gxld.o: In function `main':
+ztest15530.c:(.text+0xe): undefined reference to `__errno'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest15530.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for unistd.h... Yes.
+
+=== ztest15530.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for stdarg.h... Yes.
+
+=== ztest15530.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest15530.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -DNO_STRERROR -o ztest15530 ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest15530.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest15530.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for return value of vsnprintf()... Yes.
+
+ALL = static
+AR = /home/ukyo/emscripten/emar
+ARFLAGS = rc
+CC = /home/ukyo/emscripten/emcc
+CFLAGS = -DNO_STRERROR
+CPP = /home/ukyo/emscripten/emcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = /home/ukyo/emscripten/emcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = /home/ukyo/emscripten/emranlib
+SFLAGS = -DNO_STRERROR
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux 3.2.0-51-generic-pae
+--------------------
+
+
+--------------------
+./configure
+2013年  8月  5日 月曜日 01:06:14 JST
+=== ztest24209.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -c ztest24209.c
+... using /home/ukyo/emscripten/emcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest24209.c ===
+int foo() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+
+Checking for shared library support...
+=== ztest24209.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -w -c ztest24209.c
+/home/ukyo/emscripten/emcc -o ztest24209.so ztest24209.o
+clang: warning: argument unused during compilation: '-nostdinc'
+clang: warning: argument unused during compilation: '-nostdinc++'
+clang: warning: argument unused during compilation: '-Xclang -nobuiltininc'
+clang: warning: argument unused during compilation: '-Xclang -nostdsysteminc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/local/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libcxx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/emscripten'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/bsd'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/gfx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/net'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/SDL'
+/usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crt1.o: In function `_start':
+(.text+0x18): undefined reference to `main'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+No shared library support; try without defining CC and CFLAGS
+Building static library libz.a version 1.2.8 with /home/ukyo/emscripten/emcc.
+
+=== ztest24209.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+/home/ukyo/emscripten/emcc -c -D_LARGEFILE64_SOURCE=1 ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+ztest24209.c:2:1: error: unknown type name 'off64_t'; did you mean '_off64_t'?
+off64_t dummy = 0;
+^~~~~~~
+_off64_t
+/home/ukyo/emscripten/system/include/libc/sys/_types.h:42:32: note: '_off64_t' declared here
+__extension__ typedef unsigned _off64_t; /* XXX Emscripten */
+                               ^
+1 error generated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest24209.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -o ztest24209 ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for fseeko... Yes.
+
+=== ztest24209.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+/home/ukyo/emscripten/emcc -o ztest24209 ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+/tmp/ztest24209-OguxQf.o: In function `main':
+ztest24209.c:(.text+0xe): undefined reference to `__errno'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest24209.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for unistd.h... Yes.
+
+=== ztest24209.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for stdarg.h... Yes.
+
+=== ztest24209.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest24209.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -DNO_STRERROR -o ztest24209 ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest24209.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest24209.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for return value of vsnprintf()... Yes.
+
+ALL = static
+AR = /home/ukyo/emscripten/emar
+ARFLAGS = rc
+CC = /home/ukyo/emscripten/emcc
+CFLAGS = -DNO_STRERROR
+CPP = /home/ukyo/emscripten/emcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = /home/ukyo/emscripten/emcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = /home/ukyo/emscripten/emranlib
+SFLAGS = -DNO_STRERROR
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux 3.2.0-51-generic-pae
+--------------------
+
+
+--------------------
+./configure
+2013年  8月  5日 月曜日 18:16:55 JST
+=== ztest29133.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -c ztest29133.c
+... using /home/ukyo/emscripten/emcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest29133.c ===
+int foo() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+
+Checking for shared library support...
+=== ztest29133.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -w -c ztest29133.c
+/home/ukyo/emscripten/emcc -o ztest29133.so ztest29133.o
+clang: warning: argument unused during compilation: '-nostdinc'
+clang: warning: argument unused during compilation: '-nostdinc++'
+clang: warning: argument unused during compilation: '-Xclang -nobuiltininc'
+clang: warning: argument unused during compilation: '-Xclang -nostdsysteminc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/local/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libcxx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/emscripten'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/bsd'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/gfx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/net'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/SDL'
+/usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crt1.o: In function `_start':
+(.text+0x18): undefined reference to `main'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+No shared library support; try without defining CC and CFLAGS
+Building static library libz.a version 1.2.8 with /home/ukyo/emscripten/emcc.
+
+=== ztest29133.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+/home/ukyo/emscripten/emcc -c -D_LARGEFILE64_SOURCE=1 ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+ztest29133.c:2:1: error: unknown type name 'off64_t'; did you mean '_off64_t'?
+off64_t dummy = 0;
+^~~~~~~
+_off64_t
+/home/ukyo/emscripten/system/include/libc/sys/_types.h:42:32: note: '_off64_t' declared here
+__extension__ typedef unsigned _off64_t; /* XXX Emscripten */
+                               ^
+1 error generated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest29133.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -o ztest29133 ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for fseeko... Yes.
+
+=== ztest29133.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+/home/ukyo/emscripten/emcc -o ztest29133 ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+/tmp/ztest29133-IW4gDL.o: In function `main':
+ztest29133.c:(.text+0xe): undefined reference to `__errno'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest29133.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for unistd.h... Yes.
+
+=== ztest29133.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for stdarg.h... Yes.
+
+=== ztest29133.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest29133.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -DNO_STRERROR -o ztest29133 ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest29133.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29133.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for return value of vsnprintf()... Yes.
+
+ALL = static
+AR = /home/ukyo/emscripten/emar
+ARFLAGS = rc
+CC = /home/ukyo/emscripten/emcc
+CFLAGS = -DNO_STRERROR
+CPP = /home/ukyo/emscripten/emcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = /home/ukyo/emscripten/emcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = /home/ukyo/emscripten/emranlib
+SFLAGS = -DNO_STRERROR
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux 3.2.0-51-generic-pae
+--------------------
+
+
+--------------------
+./configure
+2013年  8月  5日 月曜日 18:20:05 JST
+=== ztest29398.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -c ztest29398.c
+... using /home/ukyo/emscripten/emcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest29398.c ===
+int foo() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+
+Checking for shared library support...
+=== ztest29398.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+/home/ukyo/emscripten/emcc -w -c ztest29398.c
+/home/ukyo/emscripten/emcc -o ztest29398.so ztest29398.o
+clang: warning: argument unused during compilation: '-nostdinc'
+clang: warning: argument unused during compilation: '-nostdinc++'
+clang: warning: argument unused during compilation: '-Xclang -nobuiltininc'
+clang: warning: argument unused during compilation: '-Xclang -nostdsysteminc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/local/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libcxx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/emscripten'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/bsd'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/libc'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/gfx'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/net'
+clang: warning: argument unused during compilation: '-Xclang -isystem/home/ukyo/emscripten/system/include/SDL'
+/usr/lib/gcc/i686-linux-gnu/4.6/../../../i386-linux-gnu/crt1.o: In function `_start':
+(.text+0x18): undefined reference to `main'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+No shared library support; try without defining CC and CFLAGS
+Building static library libz.a version 1.2.8 with /home/ukyo/emscripten/emcc.
+
+=== ztest29398.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+/home/ukyo/emscripten/emcc -c -D_LARGEFILE64_SOURCE=1 ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+ztest29398.c:2:1: error: unknown type name 'off64_t'; did you mean '_off64_t'?
+off64_t dummy = 0;
+^~~~~~~
+_off64_t
+/home/ukyo/emscripten/system/include/libc/sys/_types.h:42:32: note: '_off64_t' declared here
+__extension__ typedef unsigned _off64_t; /* XXX Emscripten */
+                               ^
+1 error generated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest29398.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -o ztest29398 ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for fseeko... Yes.
+
+=== ztest29398.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+/home/ukyo/emscripten/emcc -o ztest29398 ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+/tmp/ztest29398-mOd6AW.o: In function `main':
+ztest29398.c:(.text+0xe): undefined reference to `__errno'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest29398.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for unistd.h... Yes.
+
+=== ztest29398.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for stdarg.h... Yes.
+
+=== ztest29398.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest29398.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -DNO_STRERROR -o ztest29398 ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest29398.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+/home/ukyo/emscripten/emcc -c -DNO_STRERROR ztest29398.c
+clang: warning: argument unused during compilation: '-nostdinc++'
+Checking for return value of vsnprintf()... Yes.
+
+ALL = static
+AR = /home/ukyo/emscripten/emar
+ARFLAGS = rc
+CC = /home/ukyo/emscripten/emcc
+CFLAGS = -DNO_STRERROR
+CPP = /home/ukyo/emscripten/emcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = /home/ukyo/emscripten/emcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = /home/ukyo/emscripten/emranlib
+SFLAGS = -DNO_STRERROR
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux 3.2.0-51-generic-pae
+--------------------
+
+

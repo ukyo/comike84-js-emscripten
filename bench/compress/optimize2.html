@@ -1,0 +1,8 @@
+<script src="bench.js"></script>
+<script>
+window.onload = function() {
+  bench('/dist/zpipe_optimize2.js', function(data) {
+    zpipe.compress(data);
+  });
+};
+</script>

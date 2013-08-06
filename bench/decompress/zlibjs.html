@@ -1,0 +1,8 @@
+<script src="bench.js"></script>
+<script>
+window.onload = function() {
+  bench("/bench/zlib.min.js", function(data) {
+    new Zlib.Inflate(data).decompress();
+  });
+};
+</script>
